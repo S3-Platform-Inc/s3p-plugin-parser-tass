@@ -82,7 +82,7 @@ class TASS(S3PParserBase):
         for entry in feed.entries:
             parsed_date = dateutil.parser.parse(entry.published)
 
-            if 'nauka' in entry.link:
+            if 'tass.ru/nauka' in entry.link:
                 continue
 
             yield S3PDocument(
