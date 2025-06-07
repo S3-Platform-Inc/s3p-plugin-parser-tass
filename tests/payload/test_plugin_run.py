@@ -16,8 +16,6 @@ from s3p_sdk.types import S3PRefer, S3PDocument, S3PPlugin, S3PPluginRestriction
 from s3p_sdk.plugin.types import SOURCE
 
 
-
-
 @pytest.mark.payload_set
 class TestPayloadRun:
 
@@ -60,8 +58,7 @@ class TestPayloadRun:
         assert issubclass(parser_class, S3PParserBase), f"{class_name} is not a subclass of S3PParserBase."
         return parser_class
 
-    def run_payload(self, payload: Union[S3PParserBase, Callable], refer: S3PRefer, _plugin: S3PPlugin,
-                    restrictions: S3PPluginRestrictions, driver: WebDriver):
+    def run_payload(self, payload: Union[S3PParserBase, Callable], refer: S3PRefer, _plugin: S3PPlugin, restrictions: S3PPluginRestrictions):
 
         _payload = payload(
             refer=refer,
@@ -75,7 +72,7 @@ class TestPayloadRun:
 
     # !WARNING: Изменить максимальное время работы плагина из логических соображений
     @pytest.mark.timeout(100)
-    def test_all_cases_with_once_executing_parser(self, chrome_driver, fix_s3pRefer, fix_payload, fix_s3pPlugin):
+    def test_all_cases_with_once_executing_parser(self, fix_s3pRefer, fix_payload, fix_s3pPlugin):
         """
         Test Case
 
@@ -88,31 +85,25 @@ class TestPayloadRun:
 
         """
         max_docs = 4
-        docs = self.run_payload(fix_payload, fix_s3pRefer, fix_s3pPlugin,
-                                S3PPluginRestrictions(max_docs, None, None, None), chrome_driver)
+        docs = self.run_payload(fix_payload, fix_s3pRefer, fix_s3pPlugin, S3PPluginRestrictions(max_docs, None, None, None))
 
         # 1. Количество материалов должно быть не меньше параметра максимального числа материалов.
         assert len(docs) == max_docs, f"Payload вернул {len(docs)} материалов. А должен был {max_docs}"
 
         # 2. Тип возвращаемых документов должен соответствовать S3PDocument
-        assert isinstance(docs, tuple) and all([isinstance(el, S3PDocument) for el in
-                                                docs]), f"Тип возвращаемых документов должен соответствовать S3PDocument"
+        assert isinstance(docs, tuple) and all([isinstance(el, S3PDocument) for el in docs]), f"Тип возвращаемых документов должен соответствовать S3PDocument"
 
         # 3. Каждый полученный документ должен обязательно содержать 3 ключевых поля (title, link, published)
         for el in docs:
-            assert el.title is not None and isinstance(el.title,
-                                                       str), f"Документ {el} должен обязательно содержать ключевое поле title"
-            assert el.link is not None and isinstance(el.link,
-                                                      str), f"Документ {el} должен обязательно содержать ключевое поле link"
-            assert el.published is not None and isinstance(el.published,
-                                                           datetime.datetime), f"Документ {el} должен обязательно содержать ключевое поле published"
+            assert el.title is not None and isinstance(el.title, str), f"Документ {el} должен обязательно содержать ключевое поле title"
+            assert el.link is not None and isinstance(el.link, str), f"Документ {el} должен обязательно содержать ключевое поле link"
+            assert el.published is not None and isinstance(el.published, datetime.datetime), f"Документ {el} должен обязательно содержать ключевое поле published"
             assert el.hash
 
-    @pytest.mark.timeout(1000)
-    def test_date_restrictions(self, chrome_driver, fix_s3pRefer, fix_payload, fix_s3pPlugin):
+    @pytest.mark.timeout(100)
+    def test_date_restrictions(self, fix_s3pRefer, fix_payload, fix_s3pPlugin):
         _boundary_date = datetime.datetime.now() - datetime.timedelta(days=2)
-        docs = self.run_payload(fix_payload, fix_s3pRefer, fix_s3pPlugin,
-                                S3PPluginRestrictions(None, None, _boundary_date, None), chrome_driver)
+        docs = self.run_payload(fix_payload, fix_s3pRefer, fix_s3pPlugin, S3PPluginRestrictions(None, None, _boundary_date, None))
 
         for doc in docs:
             assert doc.published >= _boundary_date, f"The {doc.to_logging} must meet the restriction (older than {_boundary_date})"

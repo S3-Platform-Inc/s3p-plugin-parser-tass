@@ -18,7 +18,7 @@ class TestPluginREADME:
         """Проверка соответствие имен репозитория в ссылках на шильдики GitHub"""
 
         print(fix_plugin_manifest.plugin_name)
-        badge_pattern = rf'\[\!\[.*?\]\(https://github\.com/avlkv/s3p-plugin-parser-tass/actions/workflows/.*?\.yml/badge\.svg\)\]'
+        badge_pattern = rf'\[\!\[.*?\]\(https://github\.com/S3-Platform-Inc/{fix_plugin_manifest.plugin_name.replace("_", "-")}/actions/workflows/.*?\.yml/badge\.svg\)\]'
 
         found_lines = re.findall(badge_pattern, readme_content, re.MULTILINE)
         assert len(found_lines) == 3, "Обновите readme.md файл. Укажите валидный url для GitHub Badges"
