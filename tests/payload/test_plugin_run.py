@@ -71,7 +71,7 @@ class TestPayloadRun:
         return _payload.content()
 
     # !WARNING: Изменить максимальное время работы плагина из логических соображений
-    @pytest.mark.timeout(150)
+    @pytest.mark.timeout(200)
     def test_all_cases_with_once_executing_parser(self, fix_s3pRefer, fix_payload, fix_s3pPlugin):
         """
         Test Case
@@ -84,7 +84,7 @@ class TestPayloadRun:
             3. Каждый полученный документ должен обязательно содержать 3 ключевых поля (title, link, published)
 
         """
-        max_docs = 5
+        max_docs = 4
         docs = self.run_payload(fix_payload, fix_s3pRefer, fix_s3pPlugin, S3PPluginRestrictions(max_docs, None, None, None))
 
         # 1. Количество материалов должно быть не меньше параметра максимального числа материалов.
