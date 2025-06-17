@@ -51,7 +51,12 @@ class TASS(S3PParserBase):
                 number
             ):
                 time.sleep(randint(1,3))
-                parsed_document = self._parsed_webpage(document)
+                try:
+                    parsed_document = self._parsed_webpage(document)
+                except Exception as e:
+                    self.logger.warning(f"Webpage {document.link} done with exception {e}")
+                    continue
+
                 try:
                     parsed_document.loaded = datetime.now()
                     self._find(parsed_document)
