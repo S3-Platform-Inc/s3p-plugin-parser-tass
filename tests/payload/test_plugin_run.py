@@ -103,7 +103,7 @@ class TestPayloadRun:
     @pytest.mark.timeout(200)
     def test_date_restrictions(self, fix_s3pRefer, fix_payload, fix_s3pPlugin):
         _boundary_date = datetime.datetime.now()
-        docs = self.run_payload(fix_payload, fix_s3pRefer, fix_s3pPlugin, S3PPluginRestrictions(None, None, _boundary_date, None))
+        docs = self.run_payload(fix_payload, fix_s3pRefer, fix_s3pPlugin, S3PPluginRestrictions(4, None, _boundary_date, None))
 
         for doc in docs:
             assert doc.published >= _boundary_date, f"The {doc.to_logging} must meet the restriction (older than {_boundary_date})"
