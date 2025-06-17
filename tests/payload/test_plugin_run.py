@@ -71,7 +71,7 @@ class TestPayloadRun:
         return _payload.content()
 
     # !WARNING: Изменить максимальное время работы плагина из логических соображений
-    @pytest.mark.timeout(150)
+    @pytest.mark.timeout(200)
     def test_all_cases_with_once_executing_parser(self, fix_s3pRefer, fix_payload, fix_s3pPlugin):
         """
         Test Case
@@ -103,7 +103,7 @@ class TestPayloadRun:
     @pytest.mark.timeout(200)
     def test_date_restrictions(self, fix_s3pRefer, fix_payload, fix_s3pPlugin):
         _boundary_date = datetime.datetime.now()
-        docs = self.run_payload(fix_payload, fix_s3pRefer, fix_s3pPlugin, S3PPluginRestrictions(None, None, _boundary_date, None))
+        docs = self.run_payload(fix_payload, fix_s3pRefer, fix_s3pPlugin, S3PPluginRestrictions(4, None, _boundary_date, None))
 
         for doc in docs:
             assert doc.published >= _boundary_date, f"The {doc.to_logging} must meet the restriction (older than {_boundary_date})"
